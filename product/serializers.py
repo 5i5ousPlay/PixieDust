@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Folder, PenOrganizer
+from .models import Product, Folder, PenOrganizer, Planner
 from django.core.exceptions import ValidationError
 
 
@@ -26,6 +26,10 @@ class ProductCreateSerializer(serializers.Serializer):
             validated_data.pop('height')
             po = PenOrganizer.objects.create(**validated_data)
             return po
+        elif collection == 'P':
+            validated_data.pop('slots')
+            planner = Planner.objects.create(**validated_data)
+            return planner
         else:
             raise ValidationError("Value is not a product type")
 
@@ -42,12 +46,20 @@ class PenOrganizerSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PlannerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Planner
+        fields = '__all__'
+
+
 class ProductListSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         if isinstance(instance, Folder):
             return FolderSerializer(instance=instance).data
         elif isinstance(instance, PenOrganizer):
             return PenOrganizerSerializer(instance=instance).data
+        elif isinstance(instance, Planner):
+            return PlannerSerializer(instance=instance).data
 
     class Meta:
         model = Product
