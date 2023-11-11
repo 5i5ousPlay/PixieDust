@@ -39,3 +39,13 @@ class ProductListView(ProductSubclassMixin, generics.ListAPIView):
     serializer_class = ProductListSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = ProductListFilterSet
+
+
+class ProductDetailView(ProductSubclassMixin, generics.RetrieveUpdateAPIView):
+    serializer_class = ProductListSerializer
+    lookup_field = 'id'
+
+
+class ProductDeleteView(ProductSubclassMixin, generics.DestroyAPIView):
+    serializer_class = ProductListSerializer
+    lookup_field = 'id'
