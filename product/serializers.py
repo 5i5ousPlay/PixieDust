@@ -1,18 +1,21 @@
 from rest_framework import serializers
 from .models import Product, Folder, PenOrganizer, Planner
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class ProductCreateSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=255)
     features = serializers.CharField()
-    personalization = serializers.IntegerField(default=0)
-    price = serializers.FloatField(default=0)
+    personalization = serializers.IntegerField(default=0, validators=[MinValueValidator(limit_value=0),
+                                                                      MaxValueValidator(limit_value=100)])
+    price = serializers.FloatField(default=0, validators=[MinValueValidator(limit_value=0)])
     collection = serializers.CharField(max_length=1)
-    length = serializers.FloatField(default=0)
-    width = serializers.FloatField(default=0)
-    height = serializers.FloatField(default=0)
-    slots = serializers.IntegerField(default=0)
+    length = serializers.FloatField(default=0, validators=[MinValueValidator(limit_value=0)])
+    width = serializers.FloatField(default=0, validators=[MinValueValidator(limit_value=0)])
+    height = serializers.FloatField(default=0, validators=[MinValueValidator(limit_value=0)])
+    slots = serializers.IntegerField(default=0, validators=[MinValueValidator(limit_value=0),
+                                                            MaxValueValidator(limit_value=100)])
 
     def create(self, validated_data):
         collection = validated_data['collection']
@@ -38,18 +41,37 @@ class FolderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Folder
         fields = '__all__'
+        extra_kwargs = {
+            'price': {'min_value': 0, 'max_value': None},
+            'personalization': {'min_value': 0, 'max_value': None},
+            'length': {'min_value': 0, 'max_value': None},
+            'width': {'min_value': 0, 'max_value': None},
+            'height': {'min_value': 0, 'max_value': None}
+        }
 
 
 class PenOrganizerSerializer(serializers.ModelSerializer):
     class Meta:
         model = PenOrganizer
         fields = '__all__'
+        extra_kwargs = {
+            'price': {'min_value': 0, 'max_value': None},
+            'personalization': {'min_value': 0, 'max_value': None},
+            'slots': {'min_value': 0, 'max_value': None}
+        }
 
 
 class PlannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Planner
         fields = '__all__'
+        extra_kwargs = {
+            'price': {'min_value': 0, 'max_value': None},
+            'personalization': {'min_value': 0, 'max_value': None},
+            'length': {'min_value': 0, 'max_value': None},
+            'width': {'min_value': 0, 'max_value': None},
+            'height': {'min_value': 0, 'max_value': None}
+        }
 
 
 class ProductListSerializer(serializers.ModelSerializer):
