@@ -1,6 +1,6 @@
 from django.db import models
 from model_utils.managers import InheritanceManager
-from model_utils.managers import CompositeField
+
 # Create your models here.
 
 
@@ -34,44 +34,4 @@ class Planner(Product):
     height = models.FloatField(default=0)
 
 
-class OrderItem(models.Model):
-    Quantity = models.IntegerField(default=0)
-    objects = InheritanceManager()
 
-
-class DeliveryAddress(CompositeField):
-    Street = models.CharField(max_length=255)
-    District = models.CharField(max_length=255)
-    City = models.CharField(max_length=255)
-
-
-class Order(models.Model):
-    DateOrdered = models.DateField()
-    DeliverySchedule = models. DateTimeField()
-    DeliveryAddress = DeliveryAddress()
-    GIFT_CHOICES = [
-        ("Y", "Yes"),
-        ("N", "No")
-    ]
-    #amount due
-    
-
-class Yes(Order):
-    IntendedReciepient = models.CharField(max_length=255)
-
-
-#class No(Order):
-   #multivariable authorized recipient
-
-
-class Name(CompositeField):
-    First = models.CharField(max_length=255)
-    Last = models.CharField(max_length=255)
-
-
-class SalesAgent(models.Model):
-    Name = Name()
-
-
-class Customer(models.Model):
-    Name = Name()
