@@ -35,3 +35,9 @@ class InventoryListView(generics.ListAPIView):
     serializer_class = InventorySerializer
     filter_backends = [DjangoFilterBackend]
     filterset_class = InventoryListFilterSet
+
+
+class InventoryDetailView(generics.RetrieveUpdateAPIView):
+    queryset = Inventory.objects.all()
+    serializer_class = InventorySerializer
+    lookup_field = 'id'
