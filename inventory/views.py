@@ -41,3 +41,9 @@ class InventoryDetailView(generics.RetrieveUpdateAPIView):
     queryset = Inventory.objects.all()
     serializer_class = InventorySerializer
     lookup_field = 'id'
+
+
+class InventoryDeleteView(generics.DestroyAPIView):
+    queryset = Inventory.objects.all()
+    serializer_class = InventorySerializer
+    lookup_field = 'id'
