@@ -8,3 +8,8 @@ from .models import Transaction
 class TransactionListView(generics.ListAPIView):
     queryset = Transaction.objects.all()
     serializer_class = TransactionSerializer
+
+
+class TransactionCreate(generics.CreateAPIView):
+    queryset = Transaction.objects.all()
+    serializer_class = TransactionSerializer
