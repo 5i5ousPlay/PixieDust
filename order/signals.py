@@ -1,6 +1,7 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from .models import OrderItem, Order
+from django.db.models import Sum
 
 
 @receiver(post_save, sender=OrderItem)
