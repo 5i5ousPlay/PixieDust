@@ -1,6 +1,7 @@
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from .models import OrderItem, Order
+from inventory.models import Inventory
 from django.db.models import Sum
 
 
@@ -11,8 +12,12 @@ def get_orderitem_total(sender, instance, created, *args, **kwargs):
         instance.save()
 
 
-# @receiver(post_save, sender=Order)
-# def get_order_recepient(sender, instance, created, *args, **kwargs):
-#     if created:
-#         if instance.gift == False:
-#             instance.recepient
+@receiver(post_save, sender=OrderItem)
+def decrement_inventory(sender, instance, created, *args, **kwargs):
+    if created:
+        color = instance.color
+        product = instance.product
+        quantity = instance.quantity
+        inventory = Inventory.objects.get(product=product, color=color)
+        inventory.stock -= quantity
+        inventory.save()
