@@ -8,18 +8,19 @@ from django.db.models import Sum
 
 class OrderItemSerializer(serializers.ModelSerializer):
     personalization = serializers.CharField(max_length=255, allow_blank=True)
+
     class Meta:
         model = OrderItem
         fields = ['id', 'product', 'order', 'discount', 'quantity', 'total', 'color', 'personalization']
         read_only_fields = ['total', 'order']
 
-    def validate_personalization(self, value):
-        product_id = self.initial_data['product']
-        product = Product.objects.get(id=product_id)
+    def validate(self, attrs):
+        personalization = attrs.get('personalization')
+        product = attrs.get('product')
         product_personalization_limit = product.personalization
-        if len(value) > product_personalization_limit:
+        if len(personalization) > product_personalization_limit:
             raise serializers.ValidationError("Personalization exceeds length limit")
-        return value
+        return attrs
 
 
 class OrderListSerializer(serializers.ModelSerializer):
