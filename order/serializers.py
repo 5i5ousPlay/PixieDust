@@ -15,6 +15,14 @@ class OrderItemSerializer(serializers.ModelSerializer):
         read_only_fields = ['total', 'order']
 
     def validate(self, attrs):
+        discount = attrs.get('discount')
+        if (discount > 1) or (discount < 0):
+            raise serializers.ValidationError("Invalid discount")
+
+        quantity = attrs.get('quantity')
+        if quantity < 0:
+            raise serializers.ValidationError("Invalid quantity")
+
         personalization = attrs.get('personalization')
         product = attrs.get('product')
         product_personalization_limit = product.personalization
