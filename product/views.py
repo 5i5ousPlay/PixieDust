@@ -2,7 +2,8 @@ import django_filters
 from django.shortcuts import render
 from .models import Product
 from .serializers import ProductCreateSerializer, ProductListSerializer
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.response import Response
 from django_filters.filterset import FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 # Create your views here.
@@ -49,3 +50,13 @@ class ProductDetailView(ProductSubclassMixin, generics.RetrieveUpdateAPIView):
 class ProductDeleteView(ProductSubclassMixin, generics.DestroyAPIView):
     serializer_class = ProductListSerializer
     lookup_field = 'id'
+
+    def perform_destroy(self, instance):
+        try:
+            product_inventory = instance.inventory.all()
+            for inventory in product_inventory:
+                inventory.delete()
+        except Exception as e:
+            return Response(
+                {"detail": str(e.args[0])}, status=status.HTTP_400_BAD_REQUEST
+            )
